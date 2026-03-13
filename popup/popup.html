@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GlobeSync</title>
+  <link rel="stylesheet" href="popup.css">
+  <script src="../libs/luxon.min.js"></script>
+  <script src="../libs/chart.umd.min.js"></script>
+</head>
+<body class="dark">
+
+  <!-- ── Custom Confirm Modal ────────────────────────────── -->
+  <div id="confirm-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-icon">⚠️</div>
+      <div id="confirm-title" class="modal-title">Reset Settings</div>
+      <div id="confirm-msg" class="modal-msg">Are you sure you want to reset all settings to default?</div>
+      <div class="modal-actions">
+        <button id="confirm-cancel" class="btn-secondary">Cancel</button>
+        <button id="confirm-ok" class="btn-danger-solid">Reset</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add Favorite Currency Modal ─────────────────────── -->
+  <div id="add-fav-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-icon">💱</div>
+      <div class="modal-title">Add Favorite Currency</div>
+      <div class="modal-body">
+        <div class="custom-select-wrap modal-select">
+          <button class="custom-select-btn" id="add-fav-select-btn">Select currency...</button>
+          <div class="custom-select-dropdown hidden" id="add-fav-dropdown">
+            <input type="text" class="custom-select-search" id="add-fav-search" placeholder="Search currency...">
+            <div class="custom-select-options" id="add-fav-options"></div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="add-fav-cancel" class="btn-secondary">Cancel</button>
+        <button id="add-fav-ok" class="btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Add Favorite Pair Modal ─────────────────────────── -->
+  <div id="add-pair-modal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <div class="modal-icon">🔗</div>
+      <div class="modal-title">Add Favorite Pair</div>
+      <div class="modal-body pair-modal-body">
+        <div class="pair-select-row">
+          <div class="custom-select-wrap modal-select">
+            <label class="modal-label">From</label>
+            <button class="custom-select-btn" id="pair-from-btn">USD</button>
+            <div class="custom-select-dropdown hidden" id="pair-from-dropdown">
+              <input type="text" class="custom-select-search" id="pair-from-search" placeholder="Search...">
+              <div class="custom-select-options" id="pair-from-options"></div>
+            </div>
+          </div>
+          <span class="pair-arrow">→</span>
+          <div class="custom-select-wrap modal-select">
+            <label class="modal-label">To</label>
+            <button class="custom-select-btn" id="pair-to-btn">INR</button>
+            <div class="custom-select-dropdown hidden" id="pair-to-dropdown">
+              <input type="text" class="custom-select-search" id="pair-to-search" placeholder="Search...">
+              <div class="custom-select-options" id="pair-to-options"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button id="add-pair-cancel" class="btn-secondary">Cancel</button>
+        <button id="add-pair-ok" class="btn-primary">Add</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Onboarding overlay ─────────────────────────────── -->
+  <div id="onboarding" class="hidden">
+    <div class="ob-slide active" data-slide="1">
+        <img  src="../assets/icons/icon128.png" alt="GlobeSync">
+      <h2>Welcome to GlobeSync</h2>
+      <p>Your global time & currency companion for professionals working across borders.</p>
+    </div>
+    <div class="ob-slide" data-slide="2">
+      <div class="ob-icon">🖱️</div>
+      <h2>Highlight to Convert</h2>
+      <p>Select any time or price on a webpage — a tooltip instantly shows converted values.</p>
+    </div>
+    <div class="ob-slide" data-slide="3">
+      <div class="ob-icon">⌨️</div>
+      <h2>Keyboard Shortcut</h2>
+      <p>Press <kbd>Ctrl+Shift+H</kbd> anywhere to open this popup instantly.</p>
+    </div>
+    <div class="ob-dots">
+      <span class="ob-dot active"></span>
+      <span class="ob-dot"></span>
+      <span class="ob-dot"></span>
+    </div>
+    <button id="ob-next" class="btn-primary">Next →</button>
+    <button id="ob-skip" class="btn-ghost">Skip</button>
+  </div>
+
+  <div id="app">
+
+    <header class="header">
+      <div class="header-left">
+        <img class="logo" src="../assets/icons/icon128.png" alt="GlobeSync">
+        <span class="app-name">GlobeSync</span>
+      </div>
+      <div class="header-right">
+        <button id="theme-toggle" class="icon-btn" title="Toggle theme">🌙</button>
+        <a href="../options/options.html" target="_blank" class="icon-btn" title="Settings">⚙️</a>
+      </div>
+    </header>
+
+    <nav class="tabs">
+      <button class="tab active" data-tab="time">🕐 Time</button>
+      <button class="tab" data-tab="currency">💱 Currency</button>
+      <button class="tab" data-tab="settings">⚙️ Settings</button>
+    </nav>
+
+    <div id="tab-time" class="tab-content active">
+
+      <div class="time-converter">
+        <div class="tc-title">⏱ Time Converter</div>
+        <div class="tc-row">
+          <div class="tc-field time-field-wrap">
+            <label>Time</label>
+            <div class="time-inputs-container">
+               <div class="time-dropdown-wrap">
+                  <button class="time-dropdown-btn" id="tc-hour-btn">12</button>
+                  <div class="time-dropdown-menu hidden" id="tc-hour-menu"></div>
+               </div>
+               <span class="time-sep">:</span>
+               <div class="time-dropdown-wrap">
+                  <button class="time-dropdown-btn" id="tc-min-btn">00</button>
+                  <div class="time-dropdown-menu hidden" id="tc-min-menu"></div>
+               </div>
+            </div>
+          </div>
+          <div class="tc-field tc-format-field">
+            <label>Format</label>
+            <select id="tc-format">
+              <option value="12h">12 hr</option>
+              <option value="24h">24 hr</option>
+            </select>
+          </div>
+          <div class="tc-field tc-ampm-field" id="tc-ampm-wrap">
+            <label>AM/PM</label>
+            <select id="tc-ampm">
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="tc-row">
+          <div class="tc-field tc-tz-field">
+            <label>From Timezone</label>
+            <select id="tc-from-tz"></select>
+          </div>
+          <div class="tc-field tc-tz-field">
+            <label>To Timezone</label>
+            <select id="tc-to-tz"></select>
+          </div>
+        </div>
+        <button id="tc-convert-btn" class="btn-primary tc-convert-btn">Convert</button>
+        <div id="tc-result" class="tc-result hidden"></div>
+      </div>
+
+      <hr>
+
+      <div class="search-wrap">
+        <input type="text" id="tz-search" placeholder="🔍 Search city or timezone..." autocomplete="off">
+        <div id="tz-suggestions" class="suggestions hidden"></div>
+      </div>
+
+      <div id="tz-cards" class="tz-cards"></div>
+
+      <div class="time-footer">
+        <button id="copy-all-times" class="btn-secondary">📋 Copy All</button>
+      </div>
+
+
+    </div>
+
+    <div id="tab-currency" class="tab-content hidden">
+
+      <div class="converter-card">
+        <div class="converter-row">
+          <label>Amount</label>
+          <input type="number" id="conv-amount" value="1" min="0" step="any">
+        </div>
+        <div class="converter-row two-col">
+          <div class="custom-select-wrap conv-select">
+            <label>From</label>
+            <button class="custom-select-btn" id="conv-from-btn">🇺🇸 USD</button>
+            <div class="custom-select-dropdown hidden" id="conv-from-dropdown">
+              <input type="text" class="custom-select-search" id="conv-from-search" placeholder="Search currency...">
+              <div class="custom-select-options" id="conv-from-options"></div>
+            </div>
+            <input type="hidden" id="conv-from" value="USD">
+          </div>
+          <button id="swap-currencies" class="swap-btn" title="Swap">⇄</button>
+          <div class="custom-select-wrap conv-select">
+            <label>To</label>
+            <button class="custom-select-btn" id="conv-to-btn">🇮🇳 INR</button>
+            <div class="custom-select-dropdown hidden" id="conv-to-dropdown">
+              <input type="text" class="custom-select-search" id="conv-to-search" placeholder="Search currency...">
+              <div class="custom-select-options" id="conv-to-options"></div>
+            </div>
+            <input type="hidden" id="conv-to" value="INR">
+          </div>
+        </div>
+        <div class="conv-result">
+          <div id="conv-output" class="conv-output">—</div>
+          <div id="conv-rate" class="conv-rate"></div>
+          <div class="conv-meta">
+            <span id="rate-updated">—</span>
+            <button id="refresh-rates" class="refresh-btn">🔄</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="multi-currency">
+        <div class="section-label-row">
+          <span class="section-label">Your Favorites (1 USD =)</span>
+          <button id="add-fav-btn" class="add-btn" title="Add favorite">+</button>
+        </div>
+        <div id="fav-rates" class="fav-rates"></div>
+      </div>
+
+      <div class="section-label-row" style="margin-top:8px;">
+        <span class="section-label">Favorite Pairs</span>
+        <button id="add-pair-btn" class="add-btn" title="Add pair">+</button>
+      </div>
+      <div id="fav-pairs" class="fav-pairs"></div>
+    </div>
+
+    <!-- ── TAB 3: SETTINGS (inline quick settings) ───── -->
+    <div id="tab-settings" class="tab-content hidden">
+      <div class="settings-list">
+
+        <div class="setting-row">
+          <span>Theme</span>
+          <div class="toggle-group">
+            <button class="tog active" data-pref="theme" data-val="dark">Dark</button>
+            <button class="tog" data-pref="theme" data-val="light">Light</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span>Time Format</span>
+          <div class="toggle-group">
+            <button class="tog active" data-pref="timeFormat" data-val="12h">12h</button>
+            <button class="tog" data-pref="timeFormat" data-val="24h">24h</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span>Date Format</span>
+          <div class="toggle-group">
+            <button class="tog active" data-pref="dateFormat" data-val="MM/DD/YYYY">MM/DD</button>
+            <button class="tog" data-pref="dateFormat" data-val="DD/MM/YYYY">DD/MM</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span>Rate Refresh</span>
+          <div class="toggle-group">
+            <button class="tog" data-pref="refreshInterval" data-val="1hr">1hr</button>
+            <button class="tog active" data-pref="refreshInterval" data-val="6hr">6hr</button>
+            <button class="tog" data-pref="refreshInterval" data-val="24hr">24hr</button>
+          </div>
+        </div>
+
+        <div class="setting-row">
+          <span>Working Hours</span>
+          <div class="hours-inputs">
+            <input type="number" id="work-start" value="9" min="0" max="23"> to
+            <input type="number" id="work-end" value="18" min="1" max="24">
+          </div>
+        </div>
+
+
+
+        <div class="setting-row">
+          <span>Default Tab</span>
+          <div class="toggle-group">
+            <button class="tog active" data-pref="defaultTab" data-val="time">Time</button>
+            <button class="tog" data-pref="defaultTab" data-val="currency">Currency</button>
+          </div>
+        </div>
+
+        <div class="settings-actions">
+          <button id="export-settings" class="btn-secondary">↑ Export</button>
+          <button id="import-settings" class="btn-secondary">↓ Import</button>
+          <button id="reset-settings" class="btn-danger">Reset</button>
+        </div>
+
+        <div class="settings-footer">
+          <a href="../options/options.html" target="_blank" class="link">Open Full Settings →</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /app -->
+
+  <script src="../utils/storage.js"></script>
+  <script src="../utils/timeHelper.js"></script>
+  <script src="../utils/currencyHelper.js"></script>
+  <script src="popup.js"></script>
+</body>
+</html>

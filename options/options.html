@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>GlobeSync — Settings</title>
+  <script src="../libs/luxon.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0F1117; --card: #1A1D27; --accent: #6C63FF;
+      --success: #22C55E; --danger: #EF4444;
+      --text1: #F1F5F9; --text2: #94A3B8; --border: #2D3148;
+      --input-bg: #12151E; --hover: #232740;
+    }
+
+    body.light {
+      --bg: #F8FAFC; --card: #FFFFFF; --text1: #0F172A;
+      --text2: #64748B; --border: #E2E8F0; --input-bg: #F1F5F9; --hover: #F1F5F9;
+    }
+
+    body {
+      background: var(--bg); color: var(--text1);
+      font-family: -apple-system, 'Segoe UI', system-ui, sans-serif;
+      font-size: 14px; min-height: 100vh; padding: 0;
+    }
+
+    .page { max-width: 680px; margin: 0 auto; padding: 32px 24px; }
+
+    .page-header {
+      display: flex; align-items: center; gap: 12px;
+      margin-bottom: 32px; padding-bottom: 20px;
+      border-bottom: 1px solid var(--border);
+    }
+    .page-header .logo { font-size: 32px; }
+    .page-header h1 { font-size: 22px; font-weight: 700; }
+    .page-header p { font-size: 13px; color: var(--text2); margin-top: 2px; }
+
+    .section { margin-bottom: 28px; }
+    .section-title {
+      font-size: 11px; text-transform: uppercase; letter-spacing: 0.8px;
+      color: var(--accent); font-weight: 600; margin-bottom: 12px;
+    }
+
+    .card {
+      background: var(--card); border: 1px solid var(--border);
+      border-radius: 10px; overflow: hidden;
+    }
+
+    .setting-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 14px 18px; border-bottom: 1px solid var(--border);
+      gap: 16px;
+    }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-weight: 500; font-size: 14px; }
+    .setting-desc { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+    .toggle-group { display: flex; gap: 4px; flex-shrink: 0; }
+    .tog {
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 20px; padding: 5px 14px; font-size: 12px;
+      cursor: pointer; color: var(--text2); font-family: inherit; transition: all 0.15s;
+    }
+    .tog.active { background: var(--accent); color: white; border-color: var(--accent); }
+
+    input[type="number"], select {
+      background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 7px 10px; color: var(--text1);
+      font-size: 13px; font-family: inherit; outline: none;
+      transition: border-color 0.15s;
+    }
+    input[type="number"]:focus, select:focus { border-color: var(--accent); }
+    select { min-width: 140px; cursor: pointer; }
+
+    .switch { position: relative; display: inline-block; width: 40px; height: 22px; }
+    .switch input { opacity: 0; width: 0; height: 0; }
+    .slider { position: absolute; cursor: pointer; inset: 0; background: var(--border); border-radius: 22px; transition: 0.2s; }
+    .slider::before { content: ''; position: absolute; height: 16px; width: 16px; left: 3px; bottom: 3px; background: white; border-radius: 50%; transition: 0.2s; }
+    .switch input:checked + .slider { background: var(--accent); }
+    .switch input:checked + .slider::before { transform: translateX(18px); }
+
+    /* Timezone manager */
+    .tz-list { display: flex; flex-direction: column; gap: 0; }
+    .tz-list-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; border-bottom: 1px solid var(--border);
+      gap: 10px;
+    }
+    .tz-list-item:last-child { border-bottom: none; }
+    .tz-item-info { display: flex; align-items: center; gap: 10px; flex: 1; }
+    .tz-item-flag { font-size: 20px; }
+    .tz-item-name { font-weight: 500; }
+    .tz-item-tz { font-size: 12px; color: var(--text2); margin-top: 1px; }
+    .tz-item-time { font-size: 16px; font-weight: 700; color: var(--accent); }
+    .remove-tz {
+      background: none; border: none; cursor: pointer; color: var(--text2);
+      font-size: 16px; padding: 4px 6px; border-radius: 4px; transition: all 0.15s;
+    }
+    .remove-tz:hover { color: var(--danger); background: rgba(239,68,68,0.1); }
+
+    .add-tz-row { padding: 12px 18px; display: flex; gap: 8px; }
+    .add-tz-row input {
+      flex: 1; background: var(--input-bg); border: 1px solid var(--border);
+      border-radius: 6px; padding: 8px 12px; color: var(--text1);
+      font-size: 13px; font-family: inherit; outline: none;
+    }
+    .add-tz-row input:focus { border-color: var(--accent); }
+
+    /* Currency pairs */
+    .pair-list { display: flex; flex-direction: column; gap: 0; }
+    .pair-item {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 18px; border-bottom: 1px solid var(--border);
+    }
+    .pair-item:last-child { border-bottom: none; }
+    .pair-label { font-weight: 500; }
+    .pair-meta { font-size: 12px; color: var(--text2); }
+
+    .add-pair-row { padding: 12px 18px; display: flex; gap: 8px; align-items: center; }
+
+    /* Action buttons */
+    .btn { padding: 8px 18px; border-radius: 6px; font-size: 13px; cursor: pointer; font-family: inherit; border: none; transition: all 0.15s; font-weight: 500; }
+    .btn-primary { background: var(--accent); color: white; }
+    .btn-primary:hover { opacity: 0.9; }
+    .btn-secondary { background: var(--input-bg); color: var(--text2); border: 1px solid var(--border); }
+    .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-danger { background: rgba(239,68,68,0.1); color: var(--danger); border: 1px solid rgba(239,68,68,0.3); }
+    .btn-danger:hover { background: var(--danger); color: white; }
+
+    .actions-row { display: flex; gap: 8px; margin-top: 20px; justify-content: flex-end; }
+
+    .toast {
+      position: fixed; bottom: 24px; right: 24px;
+      background: var(--accent); color: white;
+      padding: 10px 18px; border-radius: 8px; font-size: 13px;
+      opacity: 0; transform: translateY(8px); transition: all 0.2s;
+      pointer-events: none; z-index: 9999;
+    }
+    .toast.show { opacity: 1; transform: translateY(0); }
+
+    .hours-row { display: flex; align-items: center; gap: 10px; }
+    .hours-row span { color: var(--text2); }
+  </style>
+</head>
+<body class="dark">
+
+<div class="page">
+  <div class="page-header">
+    <div class="logo"><img class="logo" src="../assets/icons/icon32.png" alt="GlobeSync"></div>
+    <div>
+      <h1>GlobeSync Settings</h1>
+      <p>Customize your global time & currency experience</p>
+    </div>
+  </div>
+
+  <!-- Appearance -->
+  <div class="section">
+    <div class="section-title">Appearance</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">Theme</div><div class="setting-desc">Choose your preferred color scheme</div></div>
+        <div class="toggle-group">
+          <button class="tog active" data-pref="theme" data-val="dark">Dark</button>
+          <button class="tog" data-pref="theme" data-val="light">Light</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Time Format</div><div class="setting-desc">12-hour or 24-hour clock display</div></div>
+        <div class="toggle-group">
+          <button class="tog" data-pref="timeFormat" data-val="12h">12h</button>
+          <button class="tog" data-pref="timeFormat" data-val="24h">24h</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Date Format</div></div>
+        <div class="toggle-group">
+          <button class="tog" data-pref="dateFormat" data-val="MM/DD/YYYY">MM/DD/YYYY</button>
+          <button class="tog" data-pref="dateFormat" data-val="DD/MM/YYYY">DD/MM/YYYY</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Default Tab</div><div class="setting-desc">Tab shown when popup opens</div></div>
+        <div class="toggle-group">
+          <button class="tog" data-pref="defaultTab" data-val="time">Time</button>
+          <button class="tog" data-pref="defaultTab" data-val="currency">Currency</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Working Hours -->
+  <div class="section">
+    <div class="section-title">Working Hours</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">Business Hours</div><div class="setting-desc">Used for the Meeting Overlap Finder & status dots</div></div>
+        <div class="hours-row">
+          <input type="number" id="work-start" value="9" min="0" max="23" style="width:60px;text-align:center;">
+          <span>to</span>
+          <input type="number" id="work-end" value="18" min="1" max="24" style="width:60px;text-align:center;">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Currency -->
+  <div class="section">
+    <div class="section-title">Currency</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">Base Currency</div><div class="setting-desc">Your primary currency for conversions</div></div>
+        <select id="base-currency"></select>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Auto-Refresh Rates</div><div class="setting-desc">How often to fetch new exchange rates</div></div>
+        <div class="toggle-group">
+          <button class="tog" data-pref="refreshInterval" data-val="1hr">1hr</button>
+          <button class="tog" data-pref="refreshInterval" data-val="6hr">6hr</button>
+          <button class="tog" data-pref="refreshInterval" data-val="24hr">24hr</button>
+        </div>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Rate Change Alerts</div><div class="setting-desc">Notify when significant rate changes occur</div></div>
+        <label class="switch"><input type="checkbox" id="rate-alerts"><span class="slider"></span></label>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Saved Timezones -->
+  <div class="section">
+    <div class="section-title">Saved Timezones</div>
+    <div class="card">
+      <div id="tz-list" class="tz-list"></div>
+      <div class="add-tz-row">
+        <input type="text" id="tz-search-opts" placeholder="Search city or timezone to add...">
+        <button class="btn btn-primary" id="tz-add-btn">Add</button>
+      </div>
+      <div id="tz-suggestions-opts" style="position:relative;"></div>
+    </div>
+  </div>
+
+  <!-- Data management -->
+  <div class="section">
+    <div class="section-title">Data</div>
+    <div class="card">
+      <div class="setting-row">
+        <div><div class="setting-label">Export Settings</div><div class="setting-desc">Save your configuration as JSON</div></div>
+        <button class="btn btn-secondary" id="export-btn">↑ Export</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Import Settings</div><div class="setting-desc">Restore from a JSON backup</div></div>
+        <button class="btn btn-secondary" id="import-btn">↓ Import</button>
+      </div>
+      <div class="setting-row">
+        <div><div class="setting-label">Reset to Defaults</div><div class="setting-desc">Clear all settings and start fresh</div></div>
+        <button class="btn btn-danger" id="reset-btn">Reset All</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /page -->
+
+<div id="toast" class="toast">Settings saved!</div>
+
+<script src="../utils/storage.js"></script>
+<script src="../utils/timeHelper.js"></script>
+<script src="../utils/currencyHelper.js"></script>
+<script src="options.js"></script>
+</body>
+</html>

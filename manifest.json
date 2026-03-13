@@ -1,0 +1,59 @@
+{
+  "manifest_version": 3,
+  "name": "GlobeSync",
+  "version": "1.8.3",
+  "description": "GlobeSync - Instantly convert timezones and currencies. Highlight text on any page to convert. Built for global professionals.",
+  "icons": {
+    "16": "assets/icons/icon16.png",
+    "32": "assets/icons/icon32.png",
+    "48": "assets/icons/icon48.png",
+    "128": "assets/icons/icon128.png"
+  },
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_icon": {
+      "16": "assets/icons/icon16.png",
+      "32": "assets/icons/icon32.png",
+      "48": "assets/icons/icon48.png",
+      "128": "assets/icons/icon128.png"
+    },
+    "default_title": "GlobeSync"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content/content.js"],
+      "css": ["content/tooltip.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "options_page": "options/options.html",
+  "permissions": [
+    "storage",
+    "contextMenus",
+    "notifications",
+    "alarms"
+  ],
+  "host_permissions": [
+    "https://api.exchangerate-api.com/*"
+  ],
+  "commands": {
+    "open-popup": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+H",
+        "mac": "Command+Shift+H"
+      },
+      "description": "Open GlobeSync"
+    },
+    "quick-convert": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+C",
+        "mac": "Command+Shift+C"
+      },
+      "description": "Convert selected text"
+    }
+  }
+}

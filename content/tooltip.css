@@ -1,0 +1,123 @@
+/* tooltip.css — Floating tooltip for content script */
+
+#tzcp-tooltip {
+  position: fixed;
+  z-index: 2147483647;
+  background: #1A1D27;
+  border: 1px solid #2D3148;
+  border-radius: 10px;
+  padding: 12px 14px;
+  min-width: 240px;
+  max-width: 320px;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 2px 8px rgba(108,99,255,0.15);
+  font-family: -apple-system, 'Segoe UI', sans-serif;
+  font-size: 13px;
+  color: #F1F5F9;
+  animation: tzcp-fadein 0.15s ease;
+  pointer-events: all;
+}
+
+@keyframes tzcp-fadein {
+  from { opacity: 0; transform: translateY(-4px) scale(0.97); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+#tzcp-tooltip .tzcp-header {
+  font-weight: 600;
+  color: #6C63FF;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #2D3148;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+}
+
+#tzcp-tooltip .tzcp-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+  gap: 8px;
+}
+
+#tzcp-tooltip .tzcp-row .tzcp-label {
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+}
+
+#tzcp-tooltip .tzcp-row .tzcp-value {
+  font-weight: 500;
+  color: #F1F5F9;
+  font-size: 13px;
+}
+
+#tzcp-tooltip .tzcp-row .tzcp-next {
+  font-size: 10px;
+  color: #6C63FF;
+  margin-left: 3px;
+}
+
+#tzcp-tooltip .tzcp-footer {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid #2D3148;
+  display: flex;
+  gap: 8px;
+}
+
+#tzcp-tooltip .tzcp-btn {
+  background: #2D3148;
+  border: none;
+  border-radius: 5px;
+  color: #94A3B8;
+  padding: 5px 10px;
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.15s;
+  font-family: inherit;
+}
+
+#tzcp-tooltip .tzcp-btn:hover {
+  background: #6C63FF;
+  color: #fff;
+}
+
+#tzcp-tooltip .tzcp-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  background: none;
+  border: none;
+  color: #94A3B8;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px 4px;
+  border-radius: 3px;
+  line-height: 1;
+  font-family: inherit;
+}
+
+#tzcp-tooltip .tzcp-close:hover {
+  color: #EF4444;
+  background: rgba(239,68,68,0.1);
+}
+
+/* Light mode override */
+@media (prefers-color-scheme: light) {
+  #tzcp-tooltip.tzcp-light {
+    background: #FFFFFF;
+    border-color: #E2E8F0;
+    color: #0F172A;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12);
+  }
+  #tzcp-tooltip.tzcp-light .tzcp-header { border-color: #E2E8F0; }
+  #tzcp-tooltip.tzcp-light .tzcp-footer { border-color: #E2E8F0; }
+  #tzcp-tooltip.tzcp-light .tzcp-row .tzcp-label { color: #64748B; }
+  #tzcp-tooltip.tzcp-light .tzcp-row .tzcp-value { color: #0F172A; }
+  #tzcp-tooltip.tzcp-light .tzcp-btn { background: #F1F5F9; color: #64748B; }
+}
