@@ -2,7 +2,7 @@
 
 <div align="center">
 
-<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=15&duration=3000&pause=900&color=6C63FF&center=true&vCenter=true&width=680&lines=🌐+65+World+Cities+%7C+51+Currencies+%7C+40%2B+Timezone+Abbreviations;⚡+Highlight+any+time+or+price+on+any+webpage+—+instant+tooltip;🎯+Built+for+global+professionals%2C+remote+teams+%26+digital+nomads;🔒+No+signup.+No+subscription.+No+config.+Just+works." alt="Typing SVG" />
+<img src="https://readme-typing-svg.demolab.com?font=Fira+Code&size=15&duration=3000&pause=900&color=6C63FF&center=true&vCenter=true&width=680&lines=%F0%9F%8C%90+65+World+Cities+%7C+51+Currencies+%7C+40%2B+Timezone+Abbreviations;%E2%9A%A1+Highlight+any+time+or+price+on+any+webpage+%E2%80%94+instant+tooltip;%F0%9F%8E%AF+Built+for+global+professionals%2C+remote+teams+%26+digital+nomads;%F0%9F%94%92+No+signup.+No+subscription.+No+config.+Just+works." alt="Typing SVG" />
 
 <br/>
 
