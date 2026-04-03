@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GlobeSync – Privacy Policy</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #0F1117;
+      --surface:   #181C27;
+      --border:    #252A38;
+      --accent:    #6C63FF;
+      --accent2:   #00C896;
+      --text:      #CBD5E1;
+      --text-dim:  #64748B;
+      --white:     #F1F5F9;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    .header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 24px 16px 0;
+      text-align: center;
+    }
+    .header-logo {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+    .logo-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #6C63FF, #4f46e5);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .logo-text { font-size: 17px; font-weight: 700; color: var(--accent); }
+    .logo-sub  { font-size: 11px; color: var(--text-dim); }
+    .header-divider {
+      width: 40px; height: 2px;
+      background: var(--accent);
+      margin: 12px auto 0;
+      border-radius: 2px;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      padding: 56px 16px 48px;
+      text-align: center;
+      background: var(--surface);
+    }
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 40px);
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 14px;
+    }
+    .hero p {
+      font-size: 15px;
+      color: var(--text-dim);
+      max-width: 420px;
+      margin: 0 auto;
+      line-height: 1.7;
+    }
+
+    /* ── CARDS ── */
+    .cards {
+      max-width: 720px;
+      margin: 0 auto;
+      padding: 40px 20px 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 32px 28px;
+    }
+
+    .card-icon {
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+      margin-bottom: 18px;
+    }
+    .icon-purple { background: rgba(108,99,255,.15); }
+    .icon-blue   { background: rgba(59,130,246,.15); }
+    .icon-green  { background: rgba(0,200,150,.15); }
+    .icon-orange { background: rgba(251,146,60,.15); }
+    .icon-red    { background: rgba(239,68,68,.15); }
+
+    .card h2 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--white);
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      margin-bottom: 14px;
+    }
+
+    .card p {
+      font-size: 14px;
+      line-height: 1.75;
+      color: var(--text);
+      margin-bottom: 12px;
+    }
+    .card p:last-child { margin-bottom: 0; }
+
+    .check-list {
+      list-style: none;
+      margin: 10px 0;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .check-list li {
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+    }
+    .check-list li::before {
+      content: '✓';
+      color: var(--accent2);
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+
+    .email-box {
+      background: rgba(108,99,255,.08);
+      border: 1px solid rgba(108,99,255,.25);
+      border-radius: 10px;
+      padding: 14px 18px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 12px;
+      font-size: 14px;
+      color: var(--accent);
+      font-weight: 500;
+    }
+
+    /* ── FOOTER ── */
+    .footer {
+      text-align: center;
+      padding: 24px 16px 40px;
+    }
+    .footer-badge {
+      display: inline-block;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 8px 20px;
+      font-size: 13px;
+      color: var(--text-dim);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="header-logo">
+      <div class="logo-icon">🌐</div>
+      <div>
+        <div class="logo-text">GlobeSync</div>
+        <div class="logo-sub">Privacy Policy</div>
+      </div>
+    </div>
+    <div class="header-divider"></div>
+  </div>
+
+  <!-- HERO -->
+  <div class="hero">
+    <h1>Your Privacy Matters</h1>
+    <p>We believe in transparency and your right to privacy. Learn how we handle your data.</p>
+  </div>
+
+  <!-- CARDS -->
+  <div class="cards">
+
+    <!-- Data Collection -->
+    <div class="card">
+      <div class="card-icon icon-purple">🛡️</div>
+      <h2>Data Collection</h2>
+      <p>GlobeSync is built with privacy-first principles. We do not collect, store, transmit, or share any personal user data.</p>
+      <p>All timezone conversions and currency calculations happen entirely within your browser. No data is sent to external servers — except for fetching live exchange rates directly from ExchangeRate-API.</p>
+    </div>
+
+    <!-- Local Storage -->
+    <div class="card">
+      <div class="card-icon icon-blue">💾</div>
+      <h2>Local Storage</h2>
+      <p>Your preferences and data stay on your device:</p>
+      <ul class="check-list">
+        <li>Selected world cities and timezone preferences</li>
+        <li>Favorite currency pairs</li>
+        <li>Theme preference (dark/light mode)</li>
+        <li>Time and date format settings</li>
+        <li>Working hours configuration</li>
+        <li>Extension settings and state</li>
+      </ul>
+      <p style="margin-top:12px;">All information is stored locally using Chrome's storage API and <strong style="color:var(--white);">never leaves your browser</strong>.</p>
+    </div>
+
+    <!-- Exchange Rate API -->
+    <div class="card">
+      <div class="card-icon icon-green">🔄</div>
+      <h2>Exchange Rate Requests</h2>
+      <p>GlobeSync fetches live currency exchange rates from <strong style="color:var(--white);">ExchangeRate-API</strong>. This is the only outbound network request made by the extension.</p>
+      <ul class="check-list">
+        <li>Requests contain no personal identifiers</li>
+        <li>Rates are cached locally to minimize requests</li>
+        <li>You control the refresh interval (1h / 6h / 24h)</li>
+        <li>No account or API key is tied to your identity</li>
+      </ul>
+    </div>
+
+    <!-- Analytics & Tracking -->
+    <div class="card">
+      <div class="card-icon icon-orange">📊</div>
+      <h2>Analytics &amp; Tracking</h2>
+      <p>GlobeSync does not use:</p>
+      <ul class="check-list">
+        <li>Analytics or tracking services</li>
+        <li>Third-party advertising networks</li>
+        <li>User behavior monitoring</li>
+        <li>Crash reporting services that transmit data</li>
+      </ul>
+      <p style="margin-top:12px;">Your usage is completely private and anonymous.</p>
+    </div>
+
+    <!-- Questions -->
+    <div class="card">
+      <div class="card-icon icon-red">📬</div>
+      <h2>Questions?</h2>
+      <p>If you have any concerns about your privacy or questions about this policy, please reach out:</p>
+      <div class="email-box">
+        ✉️&nbsp; misrilalsah09@gmail.com
+      </div>
+    </div>
+
+  </div>
+
+  <!-- FOOTER -->
+  <div class="footer">
+    <span class="footer-badge">Last updated: April 3, 2026</span>
+  </div>
+
+</body>
+</html>
