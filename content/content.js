@@ -6,6 +6,15 @@
   let tooltip = null;
   let enabled = true;
 
+  function escHtml(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
   // Load settings
   chrome.storage.sync.get(['highlightConvert', 'theme'], (s) => {
     enabled = s.highlightConvert !== false;
@@ -134,8 +143,8 @@
           timeStr = `${h12}:${m2} ${ap}`;
         }
 
-        const nextDay = converted.getDate() !== now.getDate();
-        const nextLabel = nextDay ? `<span class="tzcp-next">(${converted.getDate() > now.getDate() ? '+1' : '-1'}d)</span>` : '';
+        const nextDay = converted.toDateString() !== now.toDateString();
+        const nextLabel = nextDay ? `<span class="tzcp-next">(${converted.getTime() > now.getTime() ? '+1' : '-1'}d)</span>` : '';
 
         rows += `<div class="tzcp-row">
           <span class="tzcp-label">${zone.flag || '🌐'} ${zone.label}</span>
@@ -149,24 +158,30 @@
 
     createTooltip(x, y, `
       <button class="tzcp-close">✕</button>
-      <div class="tzcp-header">🕐 ${text}</div>
+      <div class="tzcp-header">🕐 ${escHtml(text)}</div>
       ${rows}
       <div class="tzcp-footer">
-        <button class="tzcp-btn tzcp-copy" data-copy="${copyText.trim()}">📋 Copy All</button>
+        <button class="tzcp-btn tzcp-copy" data-copy="${escHtml(copyText.trim())}">📋 Copy All</button>
       </div>
     `);
   }
 
   function getOffset(tzId, date) {
-    // Returns UTC offset in hours
+    // Returns UTC offset in minutes (handles half-hour timezones like IST +5:30)
     try {
-      const utcStr = new Intl.DateTimeFormat('en', {
-        timeZone: 'UTC', hour: 'numeric', hour12: false
-      }).format(date);
-      const tzStr = new Intl.DateTimeFormat('en', {
-        timeZone: tzId, hour: 'numeric', hour12: false
-      }).format(date);
-      return parseInt(tzStr) - parseInt(utcStr);
+      const fmtParts = (tz) => new Intl.DateTimeFormat('en', {
+        timeZone: tz, hour: '2-digit', minute: '2-digit', hour12: false
+      }).formatToParts(date);
+      const toMins = (parts) => {
+        let h = parseInt(parts.find(p => p.type === 'hour').value);
+        const m = parseInt(parts.find(p => p.type === 'minute').value);
+        if (h === 24) h = 0; // normalize midnight
+        return h * 60 + m;
+      };
+      let diff = toMins(fmtParts(tzId)) - toMins(fmtParts('UTC'));
+      if (diff > 720) diff -= 1440;  // handle day boundary
+      if (diff < -720) diff += 1440;
+      return diff;
     } catch { return 0; }
   }
 
@@ -262,10 +277,10 @@
 
     createTooltip(x, y, `
       <button class="tzcp-close">✕</button>
-      <div class="tzcp-header">💵 ${text}</div>
+      <div class="tzcp-header">💵 ${escHtml(text)}</div>
       ${rows}
       <div class="tzcp-footer">
-        <button class="tzcp-btn tzcp-copy" data-copy="${copyText.trim()}">📋 Copy</button>
+        <button class="tzcp-btn tzcp-copy" data-copy="${escHtml(copyText.trim())}">📋 Copy</button>
       </div>
     `);
   }
@@ -317,6 +332,7 @@
       const text = window.getSelection().toString().trim();
       if (text) {
         TIME_PATTERN.lastIndex = 0;
+        TIME24_PATTERN.lastIndex = 0;
         CURRENCY_PATTERN.lastIndex = 0;
         if (isTimeLike(text)) showTimeTooltip(text, window.innerWidth/2, 200);
         else if (isCurrencyLike(text)) showCurrencyTooltip(text, window.innerWidth/2, 200);

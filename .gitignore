@@ -1,0 +1,9 @@
+# Development utilities
+resize_icons.py
+
+# Planning docs (internal)
+.planning/
+
+# Build output / packaged zip
+*.zip
+*.crx
